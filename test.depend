@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1484228444 source:/home/isen/Documents/projet/test/main.cpp
+	"commun.h"
+
+1483705537 /home/isen/Documents/projet/test/commun.h
+	<stdio.h>
+	<iostream>
+	<opencv/cv.h>
+	"opencv/highgui.h"
+	"Webcam.h"
+
+1483700364 /home/isen/Documents/projet/test/webcam.h
+
+1483704970 /home/isen/Documents/projet/test/webcam.cpp
+	"commun.h"
+	"webcam.h"
+
+1484229996 source:/home/isen/Documents/projet/test/Webcam.cpp
+	"commun.h"
+	"Webcam.h"
+
+1483705383 /home/isen/Documents/projet/test/Webcam.h
+

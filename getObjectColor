@@ -1,0 +1,15 @@
+getObjectColor(int event, int x, int y, int flags, void * param=NULL) {
+
+
+    if (event==CV_EVENT_LBUTTONUP) {
+
+    //on obtient l'image en hsv
+        pixel = cvGet2D(hsv, y, x);
+
+    //change la valeur de du pixel tracké
+        h=(int)pixel.val[0];
+        s=(int)pixel.val[1];
+        v=(int)pixel.val[2];
+    }
+}
+
