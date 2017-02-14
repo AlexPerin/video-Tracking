@@ -7,14 +7,13 @@ class Webcam
         Webcam();
         ~Webcam();
         int initWindow(const char *);
-        int binairisation();
-        CvPoint calculBarycentre();
-        int tracking(CvPoint x);
+        CvCapture * initFlux();
+        CvPoint calculBarycentre(IplImage *mask);
+        IplImage * tracking(CvPoint x, IplImage * image);
+        void affiche(const char * nomFenetre , IplImage * imgAffiche);
+        IplImage * binairisation (IplImage * fluxOriginal);
 
     private:
-        char key;
-        const char *windowName1;
-        const char *windowName2;
         IplImage *image;
         CvCapture *capture;
         IplImage *hsv;

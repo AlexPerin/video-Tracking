@@ -6,17 +6,11 @@ using namespace cv;
 Webcam::Webcam()
 {
 
-    key = 0;
-    windowName1 = "binairisation";
-    windowName2 = "flux original";
     h=240;
     s=0;
     v=0;
     ds = 20;
-    dh = 100;
-    sommeX= 0;
-    sommeY= 0;
-    nbPixels=0;
+    dh = 50;
     CvPoint positionObj = cvPoint(-1, -1);
 
 }
@@ -34,44 +28,38 @@ int Webcam::initWindow(const char *name)
     return 0;
 }
 
-int Webcam::binairisation()
-{
+
+
+CvCapture * Webcam:: initFlux() {
+
     // Ouverture du flux video :
     capture = cvCreateCameraCapture(0);
-    // Init Fen :
-    initWindow(windowName1);
-    initWindow(windowName2);
-
 
     // Verification si l'ouverture du flux est ok :
     if (!capture)
     {
         cout << "Erreur ouverture flux video." << endl;
-        return 1;
+        return NULL;
     }
 
 
-    // Tant que l'utilisateur n'appuie pas sur la touche 'q' :
-    while(key!='q' && key!='Q')
-    {
+    return capture;
+}
 
-        //récupération du flux video dans la var image
-        image = cvQueryFrame(capture);
 
+
+IplImage * Webcam :: binairisation (IplImage * fluxOriginal) {
 
 
         //création d'un masque pour isoler
-        mask=cvCreateImage(cvGetSize(image), image-> depth, 1);
+        mask=cvCreateImage(cvGetSize(fluxOriginal), fluxOriginal-> depth, 1);
 
+        cout <<"ici" << endl;
          // conversion du flux RGB en HSV pour travailler sur la saturation et éviter les problèmes du à la brillance de l'image
-        hsv=cvCloneImage(image);
-        cvCvtColor(image, hsv, CV_BGR2HSV);
+        hsv=cvCloneImage(fluxOriginal);
+        cvCvtColor(fluxOriginal, hsv, CV_BGR2HSV);
 
         //création d'un masque pour isoler
-
-
-        //cout << "H="<< h <<" S=" << s <<" =V" << v <<endl;
-
         cvInRangeS(hsv,cvScalar(s - ds -1, h - dh, 0),cvScalar(s+ ds -1, h + dh, 255), mask);
 
         //isolation de l'objetr
@@ -79,41 +67,12 @@ int Webcam::binairisation()
         cvDilate(mask, mask, kernel, 1);
         cvErode(mask, mask, kernel, 1);
 
-        // suivi  barycentre objet
-        positionObj=calculBarycentre();
-        tracking(positionObj);
+        return mask;
 
-        cout << " X="<< positionObj.x << " Y=" << positionObj.y << endl;
-
-
-
-        // Affichage de l'image dans la fenetre :
-        cvShowImage(windowName1, mask);
-        cvShowImage(windowName2, hsv);
-
-
-
-
-
-        // On attend 10 ms :
-        key = cvWaitKey(10);
-
-
-
-
-    }
-
-    //libération de la mémoire
-
-    cvReleaseCapture(&capture);
-    cvDestroyWindow(windowName1);
-    cvDestroyWindow(windowName2);
-
-    return 0;
 }
 
 
-CvPoint Webcam :: calculBarycentre () {
+CvPoint Webcam :: calculBarycentre (IplImage * mask) {
 
     sommeX=0;
     sommeY=0;
@@ -137,7 +96,7 @@ CvPoint Webcam :: calculBarycentre () {
 
 }
 
-int Webcam :: tracking(CvPoint barycentre) {
+IplImage *  Webcam :: tracking(CvPoint barycentre, IplImage * image) {
 
     int objectNextStepX, objectNextStepY;
     CvPoint positionAct=barycentre;
@@ -177,14 +136,17 @@ int Webcam :: tracking(CvPoint barycentre) {
         cvDrawCircle(image, positionAct, 15, CV_RGB(255,0,0), -1);
     }
 
-    initWindow("color tracking");
-    cvShowImage("color tracking", image);
+    //cvShowImage("color tracking", image);
 
-    return 0;
+    return image;
 }
 
 
+void Webcam :: affiche (const char * nomFenetre , IplImage * imgAffiche) {
 
+    cvShowImage(nomFenetre, imgAffiche);
+
+}
 
 
 

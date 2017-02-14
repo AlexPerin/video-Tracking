@@ -6,8 +6,7 @@
 #include <opencv/cv.h>
 #include "opencv/highgui.h"
 #include "Webcam.h"
-#include "TraitementImg.h"
-#include "getObjectColor.cpp"
+
 
 
 
